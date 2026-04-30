@@ -1,0 +1,80 @@
+mixed-port: 7890
+allow-lan: false
+mode: rule
+log-level: info
+
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  nameserver:
+    - 1.1.1.1
+    - 8.8.8.8
+  fallback:
+    - 1.1.1.1
+    - 8.8.8.8
+
+tun:
+  enable: true
+  stack: mixed
+  auto-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+
+proxies:
+  - name: "Germany"
+    type: ss
+    server: 167.148.159.214
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: "w1zraUwh05ujFqih1fSNeK"
+
+  - name: "USA"
+    type: ss
+    server: 103.114.161.24
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: "wFCYLTgLOswRXgw2GbSEur"
+
+  - name: "France"
+    type: ss
+    server: 213.111.176.23
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: "BDosnSYFeoUfNlZcMp9CJ6"
+
+proxy-groups:
+  - name: "GLOBAL"
+    type: select
+    proxies:
+      - Germany
+      - USA
+      - France
+      - DIRECT
+
+rules:
+  # Приложения напрямую
+  - PROCESS-NAME,steam.exe,DIRECT
+  - PROCESS-NAME,steamwebhelper.exe,DIRECT
+  - PROCESS-NAME,steamservice.exe,DIRECT
+  - PROCESS-NAME,deadlock.exe,DIRECT
+
+  # Сервисы напрямую
+  - DOMAIN-SUFFIX,bybit.com,DIRECT
+  - DOMAIN-SUFFIX,twitch.tv,DIRECT
+  - DOMAIN-SUFFIX,mail.google.com,DIRECT
+  - DOMAIN-SUFFIX,gmail.com,DIRECT
+  - DOMAIN-SUFFIX,steampowered.com,DIRECT
+  - DOMAIN-SUFFIX,steamcontent.com,DIRECT
+  - DOMAIN-SUFFIX,steamstatic.com,DIRECT
+  - DOMAIN-SUFFIX,steam-chat.com,DIRECT
+  - DOMAIN-SUFFIX,dewu.com,DIRECT
+
+  # Россия напрямую
+  - GEOSITE,category-ru,DIRECT
+  - GEOIP,RU,DIRECT
+
+  # Всё остальное через прокси
+  - MATCH,GLOBAL
