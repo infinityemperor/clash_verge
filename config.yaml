@@ -45,6 +45,13 @@ proxies:
     cipher: chacha20-ietf-poly1305
     password: "BDosnSYFeoUfNlZcMp9CJ6"
 
+  - name: "Latvia"
+    type: ss
+    server: 185.193.51.246
+    port: 25748
+    cipher: chacha20-ietf-poly1305
+    password: "SZVbp1GJVWOkb4OhT0qxOL"
+
 proxy-groups:
   - name: "GLOBAL"
     type: select
@@ -52,6 +59,7 @@ proxy-groups:
       - Germany
       - USA
       - France
+      - Latvia
       - DIRECT
 
 rules:
